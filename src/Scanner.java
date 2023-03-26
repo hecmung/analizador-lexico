@@ -11,25 +11,26 @@ public class Scanner {
 
     private int linea = 1;
 
-    private static final Map<String, TipoToken> palabrasReservadas;
+    private static final Map<String, TipoToken> keyWords;
     static {
-        palabrasReservadas = new HashMap<>();
-        palabrasReservadas.put("y", TipoToken.Y);
-        palabrasReservadas.put("clase", TipoToken.CLASE);
-        /*palabrasReservadas.put("ademas", );
-        palabrasReservadas.put("falso", );
-        palabrasReservadas.put("para", );
-        palabrasReservadas.put("fun", ); //definir funciones
-        palabrasReservadas.put("si", );
-        palabrasReservadas.put("nulo", );
-        palabrasReservadas.put("o", );
-        palabrasReservadas.put("imprimir", );
-        palabrasReservadas.put("retornar", );
-        palabrasReservadas.put("super", );
-        palabrasReservadas.put("este", );
-        palabrasReservadas.put("verdadero", );
-        palabrasReservadas.put("var", ); //definir variables
-        palabrasReservadas.put("mientras", );*/
+        keyWords = new HashMap<>();
+        keyWords.put("if", TipoToken.IF);
+        keyWords.put("else", TipoToken.ELSE);
+        keyWords.put("for", TipoToken.FOR);
+        keyWords.put("while", TipoToken.WHILE);
+        keyWords.put("do", TipoToken.DO);
+        keyWords.put("break", TipoToken.BREAK);
+        keyWords.put("continue", TipoToken.CONTINUE);
+        keyWords.put("return", TipoToken.RETURN);
+        keyWords.put("void", TipoToken.VOID);
+        keyWords.put("int", TipoToken.INT);
+        keyWords.put("float", TipoToken.FLOAT);
+        keyWords.put("double", TipoToken.DOUBLE);
+        keyWords.put("char", TipoToken.CHAR);
+        keyWords.put("string", TipoToken.STRING);
+        keyWords.put("boolean", TipoToken.BOOLEAN);
+        keyWords.put("true", TipoToken.TRUE);
+        keyWords.put("false", TipoToken.FALSE);
     }
 
     Scanner(String source){
