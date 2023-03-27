@@ -62,11 +62,10 @@ public class Interprete {
         reportar(linea, "", mensaje);
     }
 
-    private static void reportar(int linea, String donde, String mensaje){
+    private static void reportar(int linea, String donde, String mensaje) {
         System.err.println(
                 "[linea " + linea + "] Error " + donde + ": " + mensaje
         );
         existenErrores = true;
     }
-
 }
