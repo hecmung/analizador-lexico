@@ -1,18 +1,13 @@
 public enum TipoToken {
     // Palabras reservadas
-    IF, ELSE, WHILE, FOR, BREAK, CONTINUE, RETURN, DO, TRUE, FALSE, PUBLIC,
-    PRIVATE, PROTECTED, STATIC, FINAL, ABSTRACT, CLASS,
-    INTERFACE, EXTENDS, IMPLEMENTS, THIS, SUPER, NEW, INSTANCEOF,
-    PACKAGE, IMPORT, THROW, THROWS, TRY, CATCH, FINALLY, ENUM, ASSERT,
-
-    // Tipos de datos
-    INT, FLOAT, DOUBLE, CHAR, STRING, BOOLEAN, VOID,
+    IF, WHILE, FOR, RETURN, TRUE, FALSE, CLASS, THIS, SUPER, ALSO,
+    FUN, NULL, PRINT, VAR,
 
     // Identificadores y literales
-    IDENTIFIER, NUMBER,
+    IDENTIFIER, NUMBER, STRING,
 
     // Operadores aritméticos
-    PLUS, MINUS, STAR, SLASH, MOD, DECREMENT, INCREMENT,
+    PLUS, MINUS, STAR, SLASH,
 
     // Operadores de comparación
     EQUAL, NOT_EQUAL, GREATER, LESS, GREATER_EQUAL, LESS_EQUAL, EQUAL_EQUAL,
@@ -20,11 +15,8 @@ public enum TipoToken {
     // Operadores lógicos
     AND, OR, NOT,
 
-    // Operadores de asignación
-    PLUS_ASSIGN, MINUS_ASSIGN, STAR_ASSIGN, SLASH_ASSIGN, MODULO_ASSIGN,
-
     // Otros símbolos
-    LPAREN, RPAREN, LBRACE, RBRACE, LBRACKET, RBRACKET, SEMICOLON, COMMA, DOT, QUOTES,
+    LPAREN, RPAREN, LBRACE, RBRACE, SEMICOLON, COMMA, DOT,
 
     //Fin del documento
     EOF
