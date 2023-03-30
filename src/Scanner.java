@@ -171,7 +171,7 @@ public class Scanner {
                 while (position < source.length() && (Character.isDigit(source.charAt(position)) || source.charAt(position) == '.')) {
                     position++;
                 }
-                tokens.add(new Token(TipoToken.NUMBER, source.substring(start, position), source.substring(start, position), start));
+                tokens.add(new Token(TipoToken.NUMBER, source.substring(start, position), Double.valueOf(source.substring(start, position)), start));
             } else if (Character.isLetter(current)) {
                 // Identificador o palabra clave
                 int start = position;
