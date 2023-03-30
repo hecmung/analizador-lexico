@@ -18,7 +18,7 @@ public class Scanner {
         keyWords = new HashMap<>();
         keyWords.put("and", TipoToken.AND);
         keyWords.put("class", TipoToken.CLASS);
-        keyWords.put("also", TipoToken.ALSO);
+        keyWords.put("else", TipoToken.ELSE);
         keyWords.put("false", TipoToken.FALSE);
         keyWords.put("for", TipoToken.FOR);
         keyWords.put("fun", TipoToken.FUN); //definir funciones
@@ -88,9 +88,10 @@ public class Scanner {
                 if (nextChar() == '=') {
                     position += 2;
                     tokens.add(new Token(TipoToken.EQUAL_EQUAL, "==", null, position));
+                } else {
+                    position++;
+                    tokens.add(new Token(TipoToken.EQUAL, "=", null, position));
                 }
-                position++;
-                tokens.add(new Token(TipoToken.EQUAL, "=", null, position));
             } else if (current == '!') {
                 if (nextChar() == '=') {
                     position += 2;

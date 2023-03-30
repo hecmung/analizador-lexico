@@ -1,6 +1,6 @@
 public enum TipoToken {
     // Palabras reservadas
-    IF, WHILE, FOR, RETURN, TRUE, FALSE, CLASS, THIS, SUPER, ALSO,
+    IF, WHILE, FOR, RETURN, TRUE, FALSE, CLASS, THIS, SUPER, ELSE,
     FUN, NULL, PRINT, VAR,
 
     // Identificadores y literales
