@@ -75,9 +75,12 @@ public class Scanner {
                 if (position + 1 < source.length()) {
                     position += 2;
                 } else {
-                    Interprete.error(position, "Unterminated comment, it's missing the simbols */");
+                    Interprete.error(linea, "Unterminated comment, it's missing the simbols */");
                     break;
                 }
+            } else if(current == '*' && nextChar() == '/') {
+                Interprete.error(linea,"Unexpected character: " + current + nextChar());
+                break;
             } else if (current == '+') {
                 position++;
                 tokens.add(new Token(TipoToken.PLUS, "+", null, position));
@@ -160,7 +163,7 @@ public class Scanner {
                 if (start + 2 == position) {
                     tokens.add(new Token(TipoToken.STRING, source.substring(start, position), source.substring(start, position), position));
                 } else if (aux == 0) {
-                    Interprete.error(position, "Character \" is missing");
+                    Interprete.error(linea, "Character \" is missing");
                     break;
                 }
                 tokens.add(new Token(TipoToken.STRING, source.substring(start, position), source.substring(start + 1, end - 1), position));
@@ -193,7 +196,7 @@ public class Scanner {
                     tokens.add(new Token(type, type.name(), null, position));
                 }
             } else {
-                Interprete.error(position,"Unexpected character: " + current);
+                Interprete.error(linea,"Unexpected character: " + current);
                 break;
             }
         }
