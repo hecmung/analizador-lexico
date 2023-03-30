@@ -176,8 +176,12 @@ public class Scanner {
                 // Identificador o palabra clave
                 int start = position;
 
-                while (position < source.length() && (Character.isLetter(source.charAt(position)))) {
-                    position++;
+                while (position < source.length() && Character.isLetter(source.charAt(position))) {
+                    if(Character.isDigit(nextChar())) {
+                        position += 2;
+                    } else {
+                        position++;
+                    }
                 }
 
                 String identifier = source.substring(start, position);
