@@ -104,16 +104,18 @@ public class Scanner {
                 if (nextChar() == '=') {
                     position += 2;
                     tokens.add(new Token(TipoToken.LESS_EQUAL, "<=", null, position));
+                } else {
+                    position++;
+                    tokens.add(new Token(TipoToken.LESS, "<", null, position));
                 }
-                position++;
-                tokens.add(new Token(TipoToken.LESS, "<", null, position));
             } else if (current == '>') {
                 if (nextChar() == '=') {
                     position += 2;
                     tokens.add(new Token(TipoToken.GREATER_EQUAL, ">=", null, position));
+                } else {
+                    position++;
+                    tokens.add(new Token(TipoToken.GREATER, ">", null, position));
                 }
-                position++;
-                tokens.add(new Token(TipoToken.GREATER, ">", null, position));
             } else if (current == '*') {
                 position++;
                 tokens.add(new Token(TipoToken.STAR, "*", null, position));
