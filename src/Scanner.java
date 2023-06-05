@@ -4,7 +4,7 @@ import java.util.Map;
 public class Scanner {
     private final String source;
     private int linea = 1;
-    private int currentChar = 0;
+    private char currentChar;
     private int position;
     private static final Map<String, TipoToken> keyWords;
     static {
@@ -20,6 +20,7 @@ public class Scanner {
     Scanner(String source){
         this.source = source;
         this.position = 0;
+        this.currentChar = source.charAt(position);
     }
 
     public Token getNextToken() {
@@ -34,24 +35,26 @@ public class Scanner {
             }
 
             if (currentChar == ',') {
-                advance();
-                return new Token(TipoToken.COMMA, ",", "", currentChar);
+                return advanceAndCreateToken(TipoToken.COMMA, ",", position);
             }
 
             if (currentChar == '.') {
-                advance();
-                return new Token(TipoToken.PUNTO, ".", "", currentChar);
+                return advanceAndCreateToken(TipoToken.PUNTO, ".", position);
             }
 
             if (currentChar == '*') {
-                advance();
-                return new Token(TipoToken.ASTERISCO, "*", "", currentChar);
+                return advanceAndCreateToken(TipoToken.ASTERISCO, "*", position);
             }
 
             error("Carácter no válido: " + currentChar);
         }
 
-        return new Token(TipoToken.EOF, "", "", currentChar);
+        return new Token(TipoToken.EOF, "", "", position);
+    }
+
+    private Token advanceAndCreateToken(TipoToken type, String value, int position) {
+        advance();
+        return new Token(type, value, "", position);
     }
 
     private void advance() {
@@ -78,7 +81,7 @@ public class Scanner {
 
         String identifier = builder.toString().toUpperCase();
         TipoToken tokenType = keyWords.getOrDefault(identifier, TipoToken.IDENTIFICADOR);
-        return new Token(tokenType, identifier, "", currentChar);
+        return new Token(tokenType, identifier, "", position);
     }
 
     private void error(String errorMessage) {
