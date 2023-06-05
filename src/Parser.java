@@ -9,10 +9,6 @@ public class Parser {
 
     public void parse() {
         query();
-
-        if (currentToken.tipo != TipoToken.EOF) {
-            error("Se esperaba fin de archivo o texto.");
-        }
     }
 
     private void query() {
@@ -21,6 +17,12 @@ public class Parser {
 
     private void selectStatement() {
         eat(TipoToken.SELECT);
+        if (currentToken.tipo == TipoToken.DISTINCT) {
+            eat(TipoToken.DISTINCT);
+        }
+        if (currentToken.tipo == TipoToken.ASTERISCO) {
+            eat(TipoToken.ASTERISCO);
+        }
         selectList();
         eat(TipoToken.FROM);
         tableName();

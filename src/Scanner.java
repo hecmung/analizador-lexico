@@ -3,7 +3,6 @@ import java.util.Map;
 
 public class Scanner {
     private final String source;
-    private int linea = 1;
     private char currentChar;
     private int position;
     private static final Map<String, TipoToken> keyWords;
@@ -28,6 +27,11 @@ public class Scanner {
             if (Character.isWhitespace(currentChar)) {
                 skipWhitespace();
                 continue;
+            }
+
+            if(currentChar == '\n' || currentChar == '\r' || currentChar == '\t') {
+
+                advance();
             }
 
             if (Character.isLetter(currentChar)) {
