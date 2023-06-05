@@ -1,18 +1,11 @@
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Scanner {
-
     private final String source;
-
-    private final List<Token> tokens = new ArrayList<>();
-
     private int linea = 1;
-
-    private int position = 0;
-
+    private int currentChar = 0;
+    private int position;
     private static final Map<String, TipoToken> keyWords;
     static {
         keyWords = new HashMap<>();
@@ -26,71 +19,69 @@ public class Scanner {
 
     Scanner(String source){
         this.source = source;
+        this.position = 0;
     }
 
-    List<Token> scanTokens(){
-        //Aquí va el corazón del scanner.
-
-        /*
-        Analizar el texto de entrada para extraer todos los tokens
-        y al final agregar el token de fin de archivo
-         */
-        int estado = 0;
-        char caracter = 0;
-        String lexema = "";
-        int inicioLexema = 0;
-
-        for(int i=0; i<source.length(); i++){
-            caracter = source.charAt(i);
-
-            switch (estado){
-                case 0:
-                    if(caracter == '*'){
-                        tokens.add(new Token(TipoToken.ASTERISCO, "*","", i + 1));
-                    }
-                    else if(caracter == ','){
-                        tokens.add(new Token(TipoToken.COMMA, ",", "", i + 1));
-                    }
-                    else if(caracter == '.'){
-                        tokens.add(new Token(TipoToken.PUNTO, ".", "", i + 1));
-                    }
-                    else if(Character.isAlphabetic(caracter)){
-                        estado = 1;
-                        lexema = lexema + caracter;
-                        inicioLexema = i;
-                    }
-                    break;
-
-                case 1:
-                    if(Character.isAlphabetic(caracter) || Character.isDigit(caracter) ){
-                        lexema = lexema + caracter;
-                    }
-                    else{
-                        TipoToken tt = keyWords.get(lexema.toUpperCase());
-                        if(tt == null){
-                            tokens.add(new Token(TipoToken.IDENTIFICADOR, lexema, "", inicioLexema + 1));
-                        }
-                        else{
-                            tokens.add(new Token(tt, lexema, "", inicioLexema + 1));
-                        }
-
-                        estado = 0;
-                        i--;
-                        lexema = "";
-                        inicioLexema = 0;
-                    }
-                    break;
+    public Token getNextToken() {
+        while (currentChar != '\0') {
+            if (Character.isWhitespace(currentChar)) {
+                skipWhitespace();
+                continue;
             }
+
+            if (Character.isLetter(currentChar)) {
+                return processIdentifier();
+            }
+
+            if (currentChar == ',') {
+                advance();
+                return new Token(TipoToken.COMMA, ",", "", currentChar);
+            }
+
+            if (currentChar == '.') {
+                advance();
+                return new Token(TipoToken.PUNTO, ".", "", currentChar);
+            }
+
+            if (currentChar == '*') {
+                advance();
+                return new Token(TipoToken.ASTERISCO, "*", "", currentChar);
+            }
+
+            error("Carácter no válido: " + currentChar);
         }
-        tokens.add(new Token(TipoToken.EOF, "", "", source.length()));
-        return tokens;
+
+        return new Token(TipoToken.EOF, "", "", currentChar);
     }
 
-    private char nextChar() {
-        if (position + 1 >= source.length()) {
-            return '\0';
+    private void advance() {
+        position++;
+        if (position < source.length()) {
+            currentChar = source.charAt(position);
+        } else {
+            currentChar = '\0';
+        }
+    }
+
+    private void skipWhitespace() {
+        while (currentChar != '\0' && Character.isWhitespace(currentChar)) {
+            advance();
+        }
+    }
+
+    private Token processIdentifier() {
+        StringBuilder builder = new StringBuilder();
+        while (currentChar != '\0' && Character.isLetterOrDigit(currentChar)) {
+            builder.append(currentChar);
+            advance();
         }
 
-        return source.charAt(position + 1);
+        String identifier = builder.toString().toUpperCase();
+        TipoToken tokenType = keyWords.getOrDefault(identifier, TipoToken.IDENTIFICADOR);
+        return new Token(tokenType, identifier, "", currentChar);
+    }
+
+    private void error(String errorMessage) {
+        throw new RuntimeException("Error léxico: " + errorMessage);
     }
 }
