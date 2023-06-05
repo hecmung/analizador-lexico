@@ -45,12 +45,17 @@ public class Interprete {
     }
 
     private static void ejecutar(String source){
-        Scanner scanner = new Scanner(source);
+        /*
         List<Token> tokens = scanner.scanTokens();
 
         for(Token token : tokens){
             System.out.println(token);
-        }
+        }*/
+        Scanner scanner = new Scanner(source);
+        Parser parser = new Parser(scanner);
+
+        parser.parse();
+        System.out.println("Sentencia válida");
     }
 
     /*

@@ -1,244 +1,94 @@
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Scanner {
-
     private final String source;
-
-    private final List<Token> tokens = new ArrayList<>();
-
-    private int linea = 1;
-
-    private int position = 0;
-
+    private char currentChar;
+    private int position;
     private static final Map<String, TipoToken> keyWords;
     static {
         keyWords = new HashMap<>();
-        keyWords.put("and", TipoToken.AND);
-        keyWords.put("class", TipoToken.CLASS);
-        keyWords.put("else", TipoToken.ELSE);
-        keyWords.put("false", TipoToken.FALSE);
-        keyWords.put("for", TipoToken.FOR);
-        keyWords.put("fun", TipoToken.FUN); //definir funciones
-        keyWords.put("if", TipoToken.IF);
-        keyWords.put("null", TipoToken.NULL);
-        keyWords.put("or", TipoToken.OR);
-        keyWords.put("print", TipoToken.PRINT);
-        keyWords.put("return", TipoToken.RETURN);
-        keyWords.put("super", TipoToken.SUPER);
-        keyWords.put("this", TipoToken.THIS);
-        keyWords.put("true", TipoToken.TRUE);
-        keyWords.put("var", TipoToken.VAR); //definir variables
-        keyWords.put("while", TipoToken.WHILE);
+        keyWords.put("SELECT", TipoToken.SELECT);
+        keyWords.put("FROM", TipoToken.FROM);
+        keyWords.put("DISTINCT", TipoToken.DISTINCT);
+        keyWords.put("COMMA", TipoToken.COMMA);
+        keyWords.put("PUNTO", TipoToken.PUNTO);
+        keyWords.put("ASTERISCO", TipoToken.ASTERISCO);
     }
 
     Scanner(String source){
         this.source = source;
+        this.position = 0;
+        this.currentChar = source.charAt(position);
     }
 
-    List<Token> scanTokens(){
-        //Aquí va el corazón del scanner.
-
-        /*
-        Analizar el texto de entrada para extraer todos los tokens
-        y al final agregar el token de fin de archivo
-         */
-        while (position < source.length()) {
-            char current = source.charAt(position);
-
-            if (current == ' ' || current == '\t' || current == '\r') {
-                //Sentencia para ignorar espacios y/o tabulaciones
-                position++;
+    public Token getNextToken() {
+        while (currentChar != '\0') {
+            if (Character.isWhitespace(currentChar)) {
+                skipWhitespace();
+                continue;
             }
-            else if (current == '\n') {
-                //Sentencia para ignorar saltos de línea
-                position++;
-                linea++;
-            } else if (current == '/' && nextChar() == '/') {
-                //Sentencia para ignorar comentario
-                position += 2;
-                while (position < source.length() && source.charAt(position) != '\n') {
-                    position++;
-                }
-            } else if (current == '/' && nextChar() == '*') {
-                //Sentencia para ignorar comentario de varias líneas
-                position += 2;
-                while (position + 1 < source.length() && !(source.charAt(position) == '*' && source.charAt(position + 1) == '/')) {
-                    if (source.charAt(position) == '\n') {
-                        linea++;
-                    }
-                    position++;
-                }
 
-                if (position + 1 < source.length()) {
-                    position += 2;
-                } else {
-                    Interprete.error(linea, "Unterminated comment, it's missing the simbols */");
-                    break;
-                }
-            } else if(current == '*' && nextChar() == '/') {
-                Interprete.error(linea,"Unexpected character: " + current + nextChar());
-                break;
-            } else if (current == '+') {
-                position++;
-                tokens.add(new Token(TipoToken.PLUS, "+", null, position));
-            } else if (current == '-') {
-                position++;
-                tokens.add(new Token(TipoToken.MINUS, "-", null, position));
-            } else if (current == '=') {
-                if (nextChar() == '=') {
-                    position += 2;
-                    tokens.add(new Token(TipoToken.EQUAL_EQUAL, "==", null, position));
-                } else {
-                    position++;
-                    tokens.add(new Token(TipoToken.EQUAL, "=", null, position));
-                }
-            } else if (current == '!') {
-                if (nextChar() == '=') {
-                    position += 2;
-                    tokens.add(new Token(TipoToken.NOT_EQUAL, "!=", null, position));
-                } else {
-                    position++;
-                    tokens.add(new Token(TipoToken.NOT, "!", null, position));
-                }
-            } else if (current == '<') {
-                if (nextChar() == '=') {
-                    position += 2;
-                    tokens.add(new Token(TipoToken.LESS_EQUAL, "<=", null, position));
-                } else {
-                    position++;
-                    tokens.add(new Token(TipoToken.LESS, "<", null, position));
-                }
-            } else if (current == '>') {
-                if (nextChar() == '=') {
-                    position += 2;
-                    tokens.add(new Token(TipoToken.GREATER_EQUAL, ">=", null, position));
-                } else {
-                    position++;
-                    tokens.add(new Token(TipoToken.GREATER, ">", null, position));
-                }
-            } else if (current == '*') {
-                position++;
-                tokens.add(new Token(TipoToken.STAR, "*", null, position));
-            } else if (current == '/') {
-                position++;
-                tokens.add(new Token(TipoToken.SLASH, "/", null, position));
-            } else if (current == ';') {
-                position++;
-                tokens.add(new Token(TipoToken.SEMICOLON, ";", null, position));
-            } else if (current == ',') {
-                position++;
-                tokens.add(new Token(TipoToken.COMMA, ",", null, position));
-            } else if (current == '.') {
-                position++;
-                tokens.add(new Token(TipoToken.DOT, ".", null, position));
-            } else if (current == '(') {
-                position++;
-                tokens.add(new Token(TipoToken.LPAREN, "(", null, position));
-            } else if (current == ')') {
-                position++;
-                tokens.add(new Token(TipoToken.RPAREN, ")", null, position));
-            } else if (current == '{') {
-                position++;
-                tokens.add(new Token(TipoToken.LBRACE, "{", null, position));
-            } else if (current == '}') {
-                position++;
-                tokens.add(new Token(TipoToken.RBRACE, "}", null, position));
-            } else if (current == '\"') {
-                int start = position, aux = 0;
+            if(currentChar == '\n' || currentChar == '\r' || currentChar == '\t') {
 
-                while (position < source.length()) {
-                    if (nextChar() == '\"') {
-                        position += 2;
-                        aux++;
-                        break;
-                    } else {
-                        position++;
-                    }
-                }
-                int end = position;
-
-                if (start + 2 == position) {
-                    tokens.add(new Token(TipoToken.STRING, source.substring(start, position), source.substring(start, position), position));
-                } else if (aux == 0) {
-                    Interprete.error(linea, "Character \" is missing");
-                    break;
-                }
-                tokens.add(new Token(TipoToken.STRING, source.substring(start, position), source.substring(start + 1, end - 1), position));
-            } else if (Character.isDigit(current)) {
-                // Números
-                int start = position;
-
-                while (position < source.length() && (Character.isDigit(source.charAt(position)) || source.charAt(position) == '.')) {
-                    position++;
-                }
-                tokens.add(new Token(TipoToken.NUMBER, source.substring(start, position), Double.valueOf(source.substring(start, position)), start));
-            } else if (Character.isLetter(current)) {
-                // Identificador o palabra clave
-                int start = position;
-
-                while (position < source.length() && Character.isLetter(source.charAt(position))) {
-                    if(Character.isDigit(nextChar())) {
-                        position += 2;
-                    } else {
-                        position++;
-                    }
-                }
-
-                String identifier = source.substring(start, position);
-                TipoToken type = keyWords.get(identifier);
-
-                if (type == null) {
-                    tokens.add(new Token(TipoToken.IDENTIFIER, identifier, null, position));
-                } else {
-                    tokens.add(new Token(type, type.name(), null, position));
-                }
-            } else {
-                Interprete.error(linea,"Unexpected character: " + current);
-                break;
+                advance();
             }
-        }
-        tokens.add(new Token(TipoToken.EOF, "", null, linea));
-        return tokens;
-    }
 
-    private char nextChar() {
-        if (position + 1 >= source.length()) {
-            return '\0';
+            if (Character.isLetter(currentChar)) {
+                return processIdentifier();
+            }
+
+            if (currentChar == ',') {
+                return advanceAndCreateToken(TipoToken.COMMA, ",", position);
+            }
+
+            if (currentChar == '.') {
+                return advanceAndCreateToken(TipoToken.PUNTO, ".", position);
+            }
+
+            if (currentChar == '*') {
+                return advanceAndCreateToken(TipoToken.ASTERISCO, "*", position);
+            }
+
+            error("Carácter no válido: " + currentChar);
         }
 
-        return source.charAt(position + 1);
+        return new Token(TipoToken.EOF, "", "", position);
+    }
+
+    private Token advanceAndCreateToken(TipoToken type, String value, int position) {
+        advance();
+        return new Token(type, value, "", position);
+    }
+
+    private void advance() {
+        position++;
+        if (position < source.length()) {
+            currentChar = source.charAt(position);
+        } else {
+            currentChar = '\0';
+        }
+    }
+
+    private void skipWhitespace() {
+        while (currentChar != '\0' && Character.isWhitespace(currentChar)) {
+            advance();
+        }
+    }
+
+    private Token processIdentifier() {
+        StringBuilder builder = new StringBuilder();
+        while (currentChar != '\0' && Character.isLetterOrDigit(currentChar)) {
+            builder.append(currentChar);
+            advance();
+        }
+
+        String identifier = builder.toString().toUpperCase();
+        TipoToken tokenType = keyWords.getOrDefault(identifier, TipoToken.IDENTIFICADOR);
+        return new Token(tokenType, identifier, "", position);
+    }
+
+    private void error(String errorMessage) {
+        throw new RuntimeException("Error léxico: " + errorMessage);
     }
 }
-
-/*
-Signos o símbolos del lenguaje:
-(
-)
-{
-}
-,
-.
-;
--
-+
-*
-/
-!
-!=
-=
-==
-<
-<=
->
->=
-// -> comentarios (no se genera token)
-/* ... * / -> comentarios (no se genera token)
-Identificador,
-Cadena
-Numero
-Cada palabra reservada tiene su nombre de token
-
- */
